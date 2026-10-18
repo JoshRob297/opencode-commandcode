@@ -16,7 +16,8 @@
 - [ ] `bun run typecheck` passes
 - [ ] Regression test added that fails before this change (bug fixes)
 - [ ] `CHANGELOG.md` updated under `## [Unreleased]`
-- [ ] Docs updated in both languages (`README.md`/`docs/*` and `README.es.md`/`docs/es/*`)
+- [ ] Docs updated in both languages: `README.md`/`docs/*` and `README.es.md`/`docs/es/*`
+      (plus `SECURITY`/`CONTRIBUTING`/`CODE_OF_CONDUCT` pairs when they are affected)
 - [ ] No secrets, keys, personal paths or private hosts in code, tests, docs or logs
 
 ## Guarantees affected

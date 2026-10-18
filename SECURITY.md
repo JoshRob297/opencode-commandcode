@@ -1,5 +1,7 @@
 # Security Policy
 
+**English** | [Espanol](SECURITY.es.md)
+
 ## Scope
 
 This plugin is a client-side integration for the Command Code provider. The most

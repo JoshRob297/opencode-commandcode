@@ -29,8 +29,9 @@ structured package with dynamic model discovery.
   `COMMANDCODE_LIVE_TESTS`.
 - Strict typecheck configuration (`allowImportingTsExtensions`, `strict`,
   `noUncheckedIndexedAccess`) with `bun-types`.
-- Documentation: `README.md`, `docs/ARCHITECTURE.md`, `docs/CONFIGURATION.md`,
-  `docs/TROUBLESHOOTING.md`, `LICENSE`.
+- Documentation in English and Spanish: `README.md` / `README.es.md`,
+  `docs/{ARCHITECTURE,CONFIGURATION,TROUBLESHOOTING}.md` / `docs/es/*`,
+  `SECURITY`, `CONTRIBUTING` and `CODE_OF_CONDUCT` pairs, plus `LICENSE`.
 
 ### Changed
 
