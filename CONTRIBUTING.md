@@ -80,9 +80,10 @@ Keep commits atomic: one logical change plus its tests. Every commit must pass
 - Add or update tests. Bug fixes need a regression test that fails before the fix.
 - Update `CHANGELOG.md` under `## [Unreleased]`.
 - Docs live in two languages: `README.md` + `docs/*.md` (English) and
-  `README.es.md` + `docs/es/*.md` (Spanish), plus the community file pairs
-  (`SECURITY`, `CONTRIBUTING`, `CODE_OF_CONDUCT`). Behaviour changes must be reflected
-  in both, or say so explicitly in the PR so it can be tracked.
+  `README.es.md` + `docs/es/*.md` (Spanish), plus the translated community files
+  (`docs/es/code-of-conduct.md`, `SECURITY.es.md`, `CONTRIBUTING.es.md`). Behaviour
+  changes must be reflected in both, or say so explicitly in the PR so it can be
+  tracked.
 
 ## Adding a new hook or rule
 

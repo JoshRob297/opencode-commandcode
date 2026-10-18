@@ -17,7 +17,7 @@
 - [ ] Regression test added that fails before this change (bug fixes)
 - [ ] `CHANGELOG.md` updated under `## [Unreleased]`
 - [ ] Docs updated in both languages: `README.md`/`docs/*` and `README.es.md`/`docs/es/*`
-      (plus `SECURITY`/`CONTRIBUTING`/`CODE_OF_CONDUCT` pairs when they are affected)
+      (plus `SECURITY.es.md`/`CONTRIBUTING.es.md`/`docs/es/code-of-conduct.md` when affected)
 - [ ] No secrets, keys, personal paths or private hosts in code, tests, docs or logs
 
 ## Guarantees affected

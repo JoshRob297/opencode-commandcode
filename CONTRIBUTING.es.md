@@ -81,9 +81,10 @@ Mantene los commits atomicos: un cambio logico mas sus tests. Cada commit debe p
   antes del fix.
 - Actualiza `CHANGELOG.md` bajo `## [Unreleased]`.
 - La documentacion vive en dos idiomas: `README.md` + `docs/*.md` (ingles) y
-  `README.es.md` + `docs/es/*.md` (espanol), mas los pares de los archivos de comunidad
-  (`SECURITY`, `CONTRIBUTING`, `CODE_OF_CONDUCT`). Los cambios de comportamiento deben
-  reflejarse en ambos, o decilo explicitamente en el PR para que quede registrado.
+  `README.es.md` + `docs/es/*.md` (espanol), mas los archivos de comunidad traducidos
+  (`docs/es/code-of-conduct.md`, `SECURITY.es.md`, `CONTRIBUTING.es.md`). Los cambios de
+  comportamiento deben reflejarse en ambos, o decilo explicitamente en el PR para que
+  quede registrado.
 
 ## Agregar un hook o una regla nueva
 
