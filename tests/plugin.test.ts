@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach } from "bun:test";
+import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import plugin, { applyModelCatalog } from "../src/index.ts";
 import { sanitizeCommandCodeMessages } from "../src/hooks/resilience.ts";
 
@@ -74,10 +74,17 @@ describe("plugin registration", () => {
 
 describe("http.request hook behavior", () => {
   let harness: ReturnType<typeof makeCtx>;
+  const MANAGED_KEY = "cc_test_key_1234567890";
 
   beforeEach(async () => {
+    // Deterministic credential so the hook tests never depend on the host setup.
+    process.env.COMMAND_CODE_API_KEY = MANAGED_KEY;
     harness = makeCtx();
     await plugin.setup(harness.ctx);
+  });
+
+  afterEach(() => {
+    delete process.env.COMMAND_CODE_API_KEY;
   });
 
   test("injects the API key only for the real Command Code origin", async () => {
