@@ -1,122 +1,81 @@
-# Codigo de Conducta del Contributor Covenant
+# Código de Conducta convenido para Contribuyentes
 
 [English](../../CODE_OF_CONDUCT.md) | **Espanol**
 
 ## Nuestro compromiso
 
-Nosotros, como miembros, contribuyentes y lideres, nos comprometemos a hacer de la
-participacion en nuestra comunidad una experiencia libre de acoso para todos, sin
-importar la edad, el tamano corporal, la discapacidad visible o invisible, la etnia,
-las caracteristicas sexuales, la identidad y expresion de genero, el nivel de
-experiencia, la educacion, el nivel socioeconomico, la nacionalidad, la apariencia
-personal, la raza, la religion o la identidad y orientacion sexual.
+Nosotros, como miembros, contribuyentes y administradores nos comprometemos a hacer de la participación en nuestra comunidad una experiencia libre de acoso para todo el mundo, independientemente de la edad, dimensión corporal, minusvalía visible o invisible, etnicidad, características sexuales, identidad y expresión de género, nivel de experiencia, educación, nivel socio-económico, nacionalidad, apariencia personal, raza, religión, o identidad u orientación sexual.
 
-Nos comprometemos a actuar e interactuar de maneras que contribuyan a una comunidad
-abierta, acogedora, diversa, inclusiva y saludable.
+Nos comprometemos a actuar e interactuar de maneras que contribuyan a una comunidad abierta, acogedora, diversa, inclusiva y sana.
 
-## Nuestros estandares
+## Nuestros estándares
 
-Ejemplos de comportamiento que contribuye a un entorno positivo:
+Ejemplos de comportamiento que contribuyen a crear un ambiente positivo para nuestra comunidad:
 
-- Demostrar empatia y amabilidad hacia otras personas.
-- Respetar las opiniones, puntos de vista y experiencias diferentes.
-- Dar y aceptar con gracia la retroalimentacion constructiva.
-- Asumir la responsabilidad y disculparse ante las personas afectadas por nuestros
-  errores, y aprender de la experiencia.
-- Centrarse en lo que es mejor no solo para nosotros como individuos, sino para la
-  comunidad en general.
+* Demostrar empatía y amabilidad ante otras personas
+* Respeto a diferentes opiniones, puntos de vista y experiencias
+* Dar y aceptar adecuadamente retroalimentación constructiva
+* Aceptar la responsabilidad y disculparse ante quienes se vean afectados por nuestros errores, aprendiendo de la experiencia
+* Centrarse en lo que sea mejor no sólo para nosotros como individuos, sino para la comunidad en general
 
 Ejemplos de comportamiento inaceptable:
 
-- El uso de lenguaje o imagenes sexualizadas, y la atencion o insinuaciones sexuales de
-  cualquier tipo.
-- Trolleo, comentarios insultantes o despectivos, y ataques personales o politicos.
-- Acoso publico o privado.
-- Publicar informacion privada de otras personas, como una direccion fisica o de correo
-  electronico, sin su permiso explicito.
-- Otra conducta que razonablemente pueda considerarse inapropiada en un entorno
-  profesional.
+* El uso de lenguaje o imágenes sexualizadas, y aproximaciones o atenciones sexuales de cualquier tipo
+* Comentarios despectivos (_trolling_), insultantes o derogatorios, y ataques personales o políticos
+* El acoso en público o privado
+* Publicar información privada de otras personas, tales como direcciones físicas o de correo electrónico, sin su permiso explícito
+* Otras conductas que puedan ser razonablemente consideradas como inapropiadas en un entorno profesional
 
-## Responsabilidades de aplicacion
+## Aplicación de las responsabilidades
 
-Los lideres de la comunidad son responsables de aclarar y hacer cumplir nuestros
-estandares de comportamiento aceptable, y tomaran acciones correctivas apropiadas y
-justas en respuesta a cualquier comportamiento que consideren inapropiado, amenazante,
-ofensivo o danino.
+Los administradores de la comunidad son responsables de aclarar y hacer cumplir nuestros estándares de comportamiento aceptable y tomarán acciones apropiadas y correctivas de forma justa en respuesta a cualquier comportamiento que consideren inapropiado, amenazante, ofensivo o dañino.
 
-Los lideres de la comunidad tienen el derecho y la responsabilidad de eliminar, editar
-o rechazar comentarios, commits, codigo, ediciones de wiki, issues y otras
-contribuciones que no esten alineadas con este Codigo de Conducta, y comunicaran los
-motivos de las decisiones de moderacion cuando corresponda.
+Los administradores de la comunidad tendrán el derecho y la responsabilidad de eliminar, editar o rechazar comentarios, _commits_, código, ediciones de páginas de wiki, _issues_ y otras contribuciones que no se alineen con este Código de Conducta, y comunicarán las razones para sus decisiones de moderación cuando sea apropiado.
 
 ## Alcance
 
-Este Codigo de Conducta aplica en todos los espacios de la comunidad, y tambien cuando
-un individuo representa oficialmente a la comunidad en espacios publicos.
+Este código de conducta aplica tanto a espacios del proyecto como a espacios públicos donde un individuo esté en representación del proyecto o comunidad. Ejemplos de esto incluyen el uso de la cuenta oficial de correo electrónico, publicaciones a través de las redes sociales oficiales, o presentaciones con personas designadas en eventos en línea o no.
 
-## Aplicacion
+## Aplicación
 
-Los casos de comportamiento abusivo, acosador o inaceptable pueden reportarse a los
-lideres de la comunidad responsables de la aplicacion a traves de GitHub (reporte
-privado o mensaje directo al mantenedor). Todas las quejas seran revisadas e
-investigadas de forma rapida y justa.
+Instancias de comportamiento abusivo, acosador o inaceptable de otro modo podrán ser reportadas a los administradores de la comunidad responsables del cumplimiento a través de GitHub, ya sea abriendo un reporte privado en este repositorio o contactando directamente al mantenedor. Todas las quejas serán evaluadas e investigadas de una manera puntual y justa.
 
-Todos los lideres de la comunidad estan obligados a respetar la privacidad y la
-seguridad de quien reporta cualquier incidente.
+Todos los administradores de la comunidad están obligados a respetar la privacidad y la seguridad de quienes reporten incidentes.
 
-## Guias de aplicacion
+## Guías de Aplicación
 
-Los lideres de la comunidad seguiran estas Guias de Impacto Comunitario para determinar
-las consecuencias de cualquier accion que consideren una violacion de este Codigo de
-Conducta:
+Los administradores de la comunidad seguirán estas Guías de Impacto en la Comunidad para determinar las consecuencias de cualquier acción que juzguen como un incumplimiento de este Código de Conducta:
 
-### 1. Correccion
+### 1. Corrección
 
-**Impacto comunitario**: uso de lenguaje inapropiado u otro comportamiento considerado
-poco profesional o no bienvenido en la comunidad.
+**Impacto en la Comunidad**: El uso de lenguaje inapropiado u otro comportamiento considerado no profesional o no acogedor en la comunidad.
 
-**Consecuencia**: una advertencia privada por escrito de los lideres de la comunidad,
-que aporte claridad sobre la naturaleza de la violacion y una explicacion de por que el
-comportamiento fue inapropiado. Se puede solicitar una disculpa publica.
+**Consecuencia**: Un aviso escrito y privado por parte de los administradores de la comunidad, proporcionando claridad alrededor de la naturaleza de este incumplimiento y una explicación de por qué el comportamiento es inaceptable. Una disculpa pública podría ser solicitada.
 
-### 2. Advertencia
+### 2. Aviso
 
-**Impacto comunitario**: una violacion a traves de un incidente unico o una serie de
-acciones.
+**Impacto en la Comunidad**: Un incumplimiento causado por un único incidente o por una cadena de acciones.
 
-**Consecuencia**: una advertencia con consecuencias por comportamiento continuado. No
-interactuar con las personas involucradas, incluida la interaccion no solicitada con
-quienes aplican el Codigo de Conducta, durante un periodo de tiempo especificado. Esto
-incluye evitar interacciones en espacios de la comunidad y tambien en canales externos
-como redes sociales. Violar estos terminos puede llevar a una expulsion temporal o
-permanente.
+**Consecuencia**: Un aviso con consecuencias por comportamiento prolongado. No se interactúa con las personas involucradas, incluyendo interacción no solicitada con quienes se encuentran aplicando el Código de Conducta, por un periodo especificado de tiempo. Esto incluye evitar las interacciones en espacios de la comunidad, así como a través de canales externos como las redes sociales. Incumplir estos términos puede conducir a una expulsión temporal o permanente.
 
-### 3. Expulsion temporal
+### 3. Expulsión temporal
 
-**Impacto comunitario**: una violacion grave de los estandares de la comunidad, incluido
-comportamiento inapropiado sostenido.
+**Impacto en la Comunidad**: Una serie de incumplimientos de los estándares de la comunidad, incluyendo comportamiento inapropiado continuo.
 
-**Consecuencia**: una expulsion temporal de cualquier tipo de interaccion o comunicacion
-publica con la comunidad durante un periodo de tiempo especificado. No se permite la
-interaccion publica ni privada con las personas involucradas, incluida la interaccion no
-solicitada con quienes aplican el Codigo de Conducta, durante este periodo. Violar estos
-terminos puede llevar a una expulsion permanente.
+**Consecuencia**: Una expulsión temporal de cualquier forma de interacción o comunicación pública con la comunidad durante un intervalo de tiempo especificado. No se permite interactuar de manera pública o privada con las personas involucradas, incluyendo interacciones no solicitadas con quienes se encuentran aplicando el Código de Conducta, durante este periodo. Incumplir estos términos puede conducir a una expulsión permanente.
 
-### 4. Expulsion permanente
+### 4. Expulsión permanente
 
-**Impacto comunitario**: demostrar un patron de violacion de los estandares de la
-comunidad, incluido comportamiento inapropiado sostenido, acoso a un individuo, o
-agresion o menosprecio hacia clases de individuos.
+**Impacto en la Comunidad**: Demostrar un patrón sistemático de incumplimientos de los estándares de la comunidad, incluyendo conductas inapropiadas prolongadas en el tiempo, acoso de individuos, o agresiones o menosprecio a grupos de individuos.
 
-**Consecuencia**: una expulsion permanente de cualquier tipo de interaccion publica
-dentro de la comunidad.
+**Consecuencia**: Una expulsión permanente de cualquier tipo de interacción pública con la comunidad del proyecto.
 
-## Atribucion
+## Atribución
 
-Este Codigo de Conducta esta adaptado del [Contributor Covenant](https://www.contributor-covenant.org),
-version 2.1, disponible en
-https://www.contributor-covenant.org/version/2/1/code_of_conduct.html.
+Este Código de Conducta es una adaptación del [Contributor Covenant][homepage], versión 2.0, disponible en https://www.contributor-covenant.org/es/version/2/0/code_of_conduct.html
 
-Las traducciones oficiales, incluida la version en espanol, estan disponibles en
-https://www.contributor-covenant.org/translations. La version en ingles es la
-canonica para efectos de aplicacion.
+Las Guías de Impacto en la Comunidad están inspiradas en la [escalera de aplicación del código de conducta de Mozilla](https://github.com/mozilla/diversity).
+
+[homepage]: https://www.contributor-covenant.org
+
+Para respuestas a las preguntas frecuentes de este código de conducta, consulta las FAQ en https://www.contributor-covenant.org/faq. Hay traducciones disponibles en https://www.contributor-covenant.org/translations
