@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/JoshRob297/opencode-commandcode/security/advisories/new
+    about: Report privately. Do not open a public issue for credential-handling defects.
+  - name: Troubleshooting guide
+    url: https://github.com/JoshRob297/opencode-commandcode/blob/main/docs/TROUBLESHOOTING.md
+    about: Documented failure modes with their exact error payloads.

@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Logs and telemetry
+*.log
+logs/
+
+# Runtime kill-switch sentinel (machine-local)
+.disable-connection-close
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+!src/**/*.key.ts
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# Local backups (never commit)
+*.bak
+*.bak-*
+*.orig

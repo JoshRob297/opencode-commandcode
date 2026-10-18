@@ -1,0 +1,19 @@
+# Normalize line endings on checkout/commit
+* text=auto eol=lf
+
+# Explicit language hints
+*.ts   text eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+*.yml  text eol=lf
+
+# Keep lockfiles out of language statistics and diff noise
+bun.lock linguist-generated=true -diff
+
+# Windows-only scripts keep CRLF (none today, reserved)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary
+*.png binary
+*.jpg binary

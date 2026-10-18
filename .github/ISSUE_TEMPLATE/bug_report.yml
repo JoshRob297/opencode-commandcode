@@ -1,0 +1,78 @@
+name: Bug report
+description: Report a defect in the plugin
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: check `docs/TROUBLESHOOTING.md` (English) or
+        `docs/es/TROUBLESHOOTING.md` (Spanish). Many failures are documented there
+        with their exact error payloads.
+
+        Do not paste an API key, an `authorization` header or a full request body.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: Expected behaviour versus observed behaviour.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Select model ...
+        2. Send a prompt that ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log lines
+      description: From `commandcode-sanitizer.log`, `commandcode-retries.log` or `commandcode-watchdog.log`. Redact anything private.
+      render: json
+  - type: input
+    id: opencode-version
+    attributes:
+      label: OpenCode version
+      placeholder: v2.0.32
+    validations:
+      required: true
+  - type: input
+    id: plugin-commit
+    attributes:
+      label: Plugin commit
+      placeholder: output of `git rev-parse --short HEAD`
+    validations:
+      required: true
+  - type: input
+    id: bun-version
+    attributes:
+      label: Bun version
+      placeholder: 1.4.0
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model id
+      placeholder: deepseek/deepseek-v4.1-flash
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: Linux, macOS, WSL
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I removed all secrets and personal paths from this report
+          required: true
+        - label: Only one plugin registers `commandcode_quota` in my config
+          required: true
