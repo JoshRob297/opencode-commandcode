@@ -304,13 +304,8 @@ export function createInactivityWatchdogStream(
   });
 }
 
-/** True for models currently offered on a free/promo tier. */
-export function isFreeModel(model: { id?: string; name?: string }): boolean {
-  const id = (model?.id ?? "").toLowerCase();
-  const name = (model?.name ?? "").toLowerCase();
-  if (/(:free|-free|_free|\.free)$/.test(id) || id.includes(":free")) return true;
-  return /\b(free|promo|promotional|trial)\b/.test(name);
-}
+/** True for models currently offered on a free/promo tier. Single source of truth. */
+export { isFreeModel } from "../catalog.ts";
 
 /**
  * The provider is registered as OpenAI-compatible, so only models that advertise
