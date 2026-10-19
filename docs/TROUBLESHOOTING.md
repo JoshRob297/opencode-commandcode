@@ -116,6 +116,30 @@ To measure the injection's effect, disable it and compare:
 export CC_NO_CONNECTION_CLOSE=1   # keep-alive reuse restored
 ```
 
+### Which model is failing?
+
+Since v1.0.2 the retry log records the model and the attempt, so resets can be attributed
+to a specific model instead of a session-wide blob:
+
+```bash
+# resets per model
+grep -o '"modelID":"[^"]*"' <state>/commandcode-retries.log | sort | uniq -c | sort -rn
+
+# the failing attempt and the backoff delay the runtime chose
+grep '"modelID"' <state>/commandcode-retries.log | tail -5
+```
+
+| Field | Meaning |
+| --- | --- |
+| `modelID` / `providerID` | Model and provider of the failed request |
+| `attempt` | Retry attempt number (1 is the original request) |
+| `delayMs` | Backoff delay the runtime chose before the next attempt |
+| `agent` | Agent that issued the request |
+
+Note that the runtime's own backoff is 2s to 10s. Gaps much larger than `delayMs` between
+two log lines mean the failed request itself took that long before the connection broke:
+that is an upstream timeout, not a stale keep-alive socket.
+
 ## A turn hangs with a tool stuck in `streaming`
 
 The watchdog aborts a silent SSE stream after 60s:

@@ -118,6 +118,30 @@ Para medir el efecto de la inyeccion, deshabilitala y compara:
 export CC_NO_CONNECTION_CLOSE=1   # se restaura la reutilizacion de keep-alive
 ```
 
+### Que modelo esta fallando?
+
+Desde la v1.0.2 el log de reintentos registra el modelo y el intento, asi que los resets se
+pueden atribuir a un modelo concreto en lugar de a un bloque indistinto de sesion:
+
+```bash
+# resets por modelo
+grep -o '"modelID":"[^"]*"' <state>/commandcode-retries.log | sort | uniq -c | sort -rn
+
+# el intento que fallo y el delay de backoff que eligio el runtime
+grep '"modelID"' <state>/commandcode-retries.log | tail -5
+```
+
+| Campo | Significado |
+| --- | --- |
+| `modelID` / `providerID` | Modelo y proveedor del request fallido |
+| `attempt` | Numero de intento (1 es el request original) |
+| `delayMs` | Delay de backoff elegido por el runtime antes del siguiente intento |
+| `agent` | Agente que emitio el request |
+
+Ojo: el backoff propio del runtime va de 2s a 10s. Huecos mucho mayores que `delayMs` entre
+dos lineas del log significan que el request fallido tardo eso en romperse: es un timeout
+upstream, no un socket keep-alive obsoleto.
+
 ## Un turno se cuelga con una herramienta en `streaming`
 
 El watchdog aborta un stream SSE mudo despues de 60s:
