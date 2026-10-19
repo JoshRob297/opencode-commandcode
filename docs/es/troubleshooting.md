@@ -179,3 +179,42 @@ mkdir -p "${COMMANDCODE_STATE_DIR:-$HOME/.local/state/opencode}" && touch "$_/pr
 
 Un log de sanitizador vacio es el estado normal: solo recibe una entrada cuando un
 payload realmente necesito reparacion.
+
+## Plugin cargado dos veces, o un plugin eliminado sigue corriendo
+
+OpenCode carga plugins desde dos lugares: el array `plugins` de `opencode.json` **y**
+todo directorio dentro de `~/.config/opencode/plugins/` (auto-descubrimiento). Esa
+asimetria explica los dos casos confusos:
+
+| Sintoma | Causa |
+| --- | --- |
+| Un plugin que quitaste de `plugins` sigue apareciendo en `opencode plugin list` | Vive en `~/.config/opencode/plugins/` y lo toma el scan de directorio |
+| Un plugin renombrado a `.disabled` dentro de ese directorio igual se carga | El scan toma cualquier subdirectorio, no solo archivos `.ts` ni el nombre original |
+
+Que funciona y que no:
+
+```bash
+# NO lo descarga
+# - quitar la entrada de opencode.json
+# - renombrar el directorio dentro de plugins/
+# - reescribir opencode.json para forzar un reload
+
+# SI lo descarga (el watcher lo suelta en vivo)
+mv ~/.config/opencode/plugins/tu-plugin ~/fuera-del-directorio/tu-plugin
+```
+
+Verifica con:
+
+```bash
+opencode plugin list
+```
+
+Si el plugin sigue listado despues de moverlo, el servicio en ejecucion lo mantuvo en
+memoria: reinicia el servidor en background (`opencode service stop`) y volve a abrir
+OpenCode. Nota que `opencode service restart` por si solo tambien sirve, pero corta la
+conexion del TUI actual.
+
+Dos plugins registrando `commandcode_quota` no es fatal - el sanitizador es idempotente,
+asi que la segunda pasada devuelve `modified: false`, y el tool se expone una sola vez -
+pero duplica el trabajo de los hooks y enturbia la telemetria, asi que mantene una sola
+copia instalada.

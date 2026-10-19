@@ -5,6 +5,21 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) - SemVer.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-19
+
+### Added
+
+- Installation straight from GitHub with the `github:` plugin specifier, verified end to
+  end (clone, cache, load, inference) with no npm publication and no build step.
+- Troubleshooting section for the plugins-directory auto-discovery asymmetry: a plugin
+  removed from `opencode.json`, or renamed inside `~/.config/opencode/plugins/`, keeps
+  loading until the directory leaves `plugins/` (then the watcher drops it live).
+
+### Changed
+
+- README and configuration docs document three installation paths: GitHub specifier
+  (recommended), local clone, and the auto-discovered plugins directory.
+
 ## [1.0.0] - 2026-10-18
 
 First modular release. Migrates the single-file `commandcode-quota` plugin into a

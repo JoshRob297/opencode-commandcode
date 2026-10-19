@@ -112,20 +112,39 @@ un request):
 
 ## Instalacion
 
-Clona el repositorio y apunta OpenCode al directorio:
+### Opcion A: Directo desde GitHub (recomendada)
+
+```jsonc
+// ~/.config/opencode/opencode.json
+{
+  "plugins": ["github:JoshRob297/opencode-commandcode"]
+}
+```
+
+OpenCode clona, cachea y ejecuta el plugin desde el repositorio. Sin publicacion en npm y
+sin build: el codigo fuente es TypeScript ejecutado por Bun.
+
+### Opcion B: Clon local
 
 ```bash
 git clone git@github.com:JoshRob297/opencode-commandcode.git
 ```
 
 ```jsonc
-// opencode.json
 {
   "plugins": [
     "/ruta/absoluta/a/opencode-commandcode"
   ]
 }
 ```
+
+### Opcion C: directorio de plugins
+
+OpenCode tambien auto-descubre todo directorio dentro de `~/.config/opencode/plugins/`,
+asi que un clon ahi se carga sin tocar `opencode.json`. La remocion no es simetrica:
+borrar la entrada del config o renombrar el directorio **no** lo descarga; el directorio
+tiene que salir de `plugins/` por completo. Ver
+[TROUBLESHOOTING](docs/es/troubleshooting.md#plugin-cargado-dos-veces-o-un-plugin-eliminado-sigue-corriendo).
 
 Reinicia OpenCode. En el siguiente arranque se descubre el catalogo de modelos, se
 registran la herramienta y el comando de barra, y se enganchan los hooks.

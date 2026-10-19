@@ -1,6 +1,6 @@
 {
   "name": "opencode-commandcode",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Production-grade OpenCode plugin for Command Code: dynamic model discovery, stability hooks and quota telemetry",
   "main": "index.ts",
   "type": "module",
