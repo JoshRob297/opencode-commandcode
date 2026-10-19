@@ -5,6 +5,24 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) - SemVer.
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-10-19
+
+### Added
+
+- Model ordering in the picker: promo/free models come first (with the runtime's "Free"
+  badge), then models are grouped by family and, inside each family, the newest version
+  comes first. Implemented by writing `cost` (zero input) and `time.released` from the
+  model editor; the release timestamp encodes the family rank and the version recency.
+- `src/catalog.ts` with pure helpers (`detectFamily`, `parseVersion`, `compareVersions`,
+  `versionScore`, `buildReleaseDate`, `isFreeModel`, `freeCostEntry`) and 20 unit tests.
+
+### Fixed
+
+- models.dev publishes its own `commandcode` provider, which OpenCode merges with the
+  configured one. That merge reintroduced the Anthropic-shaped `claude-*` models that
+  answer `400 unsupported_model` on the OpenAI-compatible transport. The catalog
+  transform now disables every provider model that is not in the curated set.
+
 ## [1.0.2] - 2026-10-19
 
 ### Fixed

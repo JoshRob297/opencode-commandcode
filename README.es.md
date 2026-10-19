@@ -176,6 +176,25 @@ agrega en runtime):
 }
 ```
 
+## Orden de modelos y modelos ajenos
+
+El orden del selector lo maneja el plugin, no el catalogo:
+
+1. **Primero los promo / free**, con el badge `Free` del runtime. El plugin escribe una
+   entrada de `cost` con input en cero para esos modelos, lo que otorga el badge y ademas
+   reporta su costo real como cero.
+2. **Agrupados por familia** (Claude, GPT, Gemini, DeepSeek, Kimi, GLM, MiniMax, Qwen, ...).
+3. **La version mas nueva primero dentro de cada familia** (`gpt-6.1-sol` antes que
+   `gpt-6-sol` antes que `gpt-5.6-sol`), derivado de la version en el id del modelo.
+
+Se materializa en el `time.released` de cada modelo, asi que sobrevive a los refrescos del
+catalogo y los modelos nuevos se ubican solos sin editar el plugin.
+
+`models.dev` publica ademas su propio provider `commandcode`, que OpenCode mergea con el
+configurado. Ese merge trae los `claude-*` de forma Anthropic, que responden
+`400 unsupported_model` en el transporte compatible con OpenAI, por eso el plugin desactiva
+todo modelo del provider que no forme parte de su catalogo curado.
+
 ---
 
 ## Configuracion

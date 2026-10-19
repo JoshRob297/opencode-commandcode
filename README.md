@@ -170,6 +170,25 @@ models at runtime):
 }
 ```
 
+## Model Ordering and Foreign Models
+
+The selector order is driven by the plugin, not by the catalog order:
+
+1. **Promo / free models first**, rendered with the runtime's `Free` badge. The plugin
+   writes a `cost` entry with zeroed input for those models, which both grants the badge
+   and reports their real cost as zero.
+2. **Grouped by family** (Claude, GPT, Gemini, DeepSeek, Kimi, GLM, MiniMax, Qwen, ...).
+3. **Newest version first inside each family** (`gpt-6.1-sol` before `gpt-6-sol` before
+   `gpt-5.6-sol`), derived from the version in the model id.
+
+This is encoded in each model's `time.released`, so it survives catalog refreshes and new
+releases are placed correctly without editing the plugin.
+
+`models.dev` also publishes its own `commandcode` provider, which OpenCode merges with the
+configured one. The merge brings in Anthropic-shaped `claude-*` models that answer
+`400 unsupported_model` on the OpenAI-compatible transport, so the plugin disables every
+provider model that is not part of its curated catalog.
+
 ---
 
 ## Configuration

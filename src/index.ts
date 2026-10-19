@@ -15,6 +15,7 @@ import {
 } from "./hooks/resilience.ts";
 import { getQuotaReport } from "./tools/quota.ts";
 import { describeRetryEvent } from "./telemetry.ts";
+import { buildReleaseDate, freeCostEntry } from "./catalog.ts";
 
 export const PROVIDER_ID = "commandcode";
 const WATCHDOG_TIMEOUT_MS = 60_000;
@@ -49,6 +50,7 @@ function applyModelCatalog(editor: any, models: any[]): { registered: number; sk
   let registered = 0;
   let skipped = 0;
   const free: string[] = [];
+  const keptIds: string[] = [];
 
   for (const model of models) {
     if (!model?.id) continue;
@@ -68,6 +70,11 @@ function applyModelCatalog(editor: any, models: any[]): { registered: number; sk
     const inputs = ["text"];
     if (supportsVision(model)) inputs.push("image");
 
+    // The picker sorts by (Free badge, release date, title). The release date
+    // encodes the family group and the version recency, so the catalog shows the
+    // promo models first and then each family from the newest model to the oldest.
+    const released = buildReleaseDate(model.id);
+
     try {
       editor.update(PROVIDER_ID, model.id, (draft: any) => {
         draft.name = displayName;
@@ -82,12 +89,40 @@ function applyModelCatalog(editor: any, models: any[]): { registered: number; sk
           input: inputs,
           output: ["text"],
         };
+        draft.time = { released };
+        if (freeTier) {
+          // Non-empty cost with zeroed input: renders the "Free" badge, sorts
+          // the model first and reports its real cost as zero.
+          draft.cost = [freeCostEntry()];
+        }
       });
       registered++;
+      keptIds.push(model.id);
       if (freeTier) free.push(displayName);
     } catch {
       skipped++;
     }
+  }
+
+  // OpenCode merges the provider definition with the models.dev catalog of the
+  // same provider id. models.dev publishes its own "commandcode" provider, which
+  // includes Anthropic-shaped claude-* models that answer 400 unsupported_model
+  // on our OpenAI-compatible transport. Disable anything that is not in the set
+  // we just curated, so the merge cannot reintroduce unusable entries.
+  try {
+    const listFn = (editor as any).list;
+    if (typeof listFn === "function") {
+      const curated = new Set(keptIds);
+      for (const existing of listFn.call(editor, PROVIDER_ID) ?? []) {
+        if (!existing?.id || curated.has(existing.id)) continue;
+        editor.update(PROVIDER_ID, existing.id, (draft: any) => {
+          draft.enabled = false;
+        });
+        skipped++;
+      }
+    }
+  } catch {
+    // fail-open: a merge we cannot inspect must not break registration
   }
 
   return { registered, skipped, free };
