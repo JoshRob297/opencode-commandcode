@@ -88,11 +88,13 @@ lineas por semana) no es un problema; si querés rotacion, apunta
 ## Integracion con OpenCode
 
 El plugin se registra solo; en `opencode.json` unicamente va el bloque del provider.
+Se instala con el especificador de GitHub (sin npm, sin build), con un clon local, o
+dejandolo en el directorio de plugins auto-descubierto (ver el readme para las tres opciones).
 
 ```jsonc
 {
   "plugins": [
-    "/ruta/absoluta/a/opencode-commandcode"
+    "github:JoshRob297/opencode-commandcode"
   ],
   "providers": {
     "commandcode": {

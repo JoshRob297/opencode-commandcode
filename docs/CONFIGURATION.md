@@ -88,11 +88,13 @@ Logs are append-only and never rotated by the plugin. At the observed event rate
 ## OpenCode integration
 
 The plugin registers itself; only the provider block belongs in `opencode.json`.
+Install it with the GitHub specifier (no npm, no build), a local clone, or by dropping it
+into the auto-discovered plugins directory - see the readme for the three options.
 
 ```jsonc
 {
   "plugins": [
-    "/absolute/path/to/opencode-commandcode"
+    "github:JoshRob297/opencode-commandcode"
   ],
   "providers": {
     "commandcode": {

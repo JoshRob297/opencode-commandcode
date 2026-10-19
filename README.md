@@ -107,20 +107,39 @@ request):
 
 ## Installation
 
-Clone the repository and point OpenCode at the directory:
+### Option A: Direct from GitHub (recommended)
+
+```jsonc
+// ~/.config/opencode/opencode.json
+{
+  "plugins": ["github:JoshRob297/opencode-commandcode"]
+}
+```
+
+OpenCode clones, caches and runs the plugin straight from the repository. No npm
+publication and no build step: the source is TypeScript executed by Bun.
+
+### Option B: Local clone
 
 ```bash
 git clone git@github.com:JoshRob297/opencode-commandcode.git
 ```
 
 ```jsonc
-// opencode.json
 {
   "plugins": [
     "/absolute/path/to/opencode-commandcode"
   ]
 }
 ```
+
+### Option C: plugins directory
+
+OpenCode also auto-discovers every directory under `~/.config/opencode/plugins/`, so a
+clone placed there loads without touching `opencode.json`. Removal is not symmetric:
+deleting the config entry or renaming the directory **does not** unload it - the
+directory has to leave `plugins/` entirely. See
+[TROUBLESHOOTING](docs/TROUBLESHOOTING.md#plugin-loaded-twice-or-a-removed-plugin-still-runs).
 
 Restart OpenCode. On the next start the model catalog is discovered, the toolbar
 tool and the slash command are registered, and the hooks are attached.
