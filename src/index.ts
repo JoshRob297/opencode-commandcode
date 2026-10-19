@@ -14,6 +14,7 @@ import {
   supportsVision,
 } from "./hooks/resilience.ts";
 import { getQuotaReport } from "./tools/quota.ts";
+import { describeRetryEvent } from "./telemetry.ts";
 
 export const PROVIDER_ID = "commandcode";
 const WATCHDOG_TIMEOUT_MS = 60_000;
@@ -200,15 +201,19 @@ export default {
           // Keep the log meaningful: only Command Code retries belong here.
           if (providerID && !providerID.includes(PROVIDER_ID)) return;
 
-          const e = event?.error || {};
+          const telemetry = describeRetryEvent(event);
           await appendEvent(logPath("commandcode-retries.log"), {
-            at: new Date().toISOString(),
-            sessionID: event?.sessionID,
-            providerID: providerID || undefined,
-            modelID: event?.modelID ?? event?.model?.modelID,
-            type: e.type,
-            status: e.status,
-            message: typeof e.message === "string" ? e.message.slice(0, 400) : undefined,
+            at: telemetry.at,
+            sessionID: telemetry.sessionID,
+            agent: telemetry.agent,
+            providerID: telemetry.providerID || undefined,
+            modelID: telemetry.modelID,
+            type: telemetry.type,
+            status: telemetry.status,
+            attempt: telemetry.attempt,
+            retry: telemetry.retry,
+            delayMs: telemetry.delayMs,
+            message: telemetry.message,
           });
         });
       } catch {

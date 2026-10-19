@@ -203,7 +203,7 @@ Kill switch en runtime para la higiene de conexion: crea un archivo centinela ll
 | --- | --- |
 | `<state>/commandcode-sanitizer.log` | Cada reparacion de payload en vuelo, con las correcciones aplicadas |
 | `<state>/commandcode-watchdog.log` | Streams SSE abortados por inactividad |
-| `<state>/commandcode-retries.log` | Reintentos de transporte de Command Code (tipo, status, mensaje) |
+| `<state>/commandcode-retries.log` | Reintentos de transporte de Command Code: sesion, agente, proveedor, modelo, tipo de error, status HTTP, numero de intento, delay del backoff y mensaje |
 | `<state>/commandcode-models-cache.json` | Ultimo catalogo de modelos bueno (TTL 12h) |
 
 `<state>` por defecto es `~/.local/state/opencode`.

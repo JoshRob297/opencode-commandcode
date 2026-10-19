@@ -197,7 +197,7 @@ Runtime kill switch for connection hygiene: create a sentinel file named
 | --- | --- |
 | `<state>/commandcode-sanitizer.log` | Every in-flight payload repair, with the fixes applied |
 | `<state>/commandcode-watchdog.log` | Aborted stalled SSE streams |
-| `<state>/commandcode-retries.log` | Command Code transport retries (type, status, message) |
+| `<state>/commandcode-retries.log` | Command Code transport retries: session, agent, provider, model, error type, HTTP status, attempt number, backoff delay and message |
 | `<state>/commandcode-models-cache.json` | Last known good model catalog (12h TTL) |
 
 `<state>` defaults to `~/.local/state/opencode`.

@@ -5,6 +5,24 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) - SemVer.
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-10-19
+
+### Fixed
+
+- Retry telemetry recorded the model as `undefined` in every single entry. The OpenCode v2
+  `retry` hook exposes the model as `model.id` / `model.providerID`, and there is no
+  `modelID` field, so the previous mapping always produced `undefined`. Verified against
+  the real event shape captured from a probe server that cuts the stream mid-flight.
+- The retry log now also records the agent, the attempt number and the backoff delay the
+  runtime chose, which makes it possible to tell an upstream timeout (large gap between
+  entries) from a runtime-side retry loop.
+
+### Added
+
+- `src/telemetry.ts` with pure helpers (`describeRetryEvent`, `extractModelId`,
+  `extractProviderId`) and 6 unit tests covering the real event shape.
+- Troubleshooting section (English and Spanish) on attributing resets to a specific model.
+
 ## [1.0.1] - 2026-10-19
 
 ### Added
