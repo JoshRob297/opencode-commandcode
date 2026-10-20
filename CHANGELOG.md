@@ -5,6 +5,19 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) - SemVer.
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-10-20
+
+### Fixed
+
+- The declared output limit was hardcoded to 16,384 tokens for every model. OpenCode
+  forwards `limit.output` as `max_completion_tokens`, so every response was capped at
+  16k even though the catalog supports far more (the DeepSeek V4.1 Flash 1017 build
+  declares 393,216). The default is now 32,768, the highest value that is safe across the
+  whole catalog (the minimum declared output in models.dev's commandcode provider is
+  exactly 32,768), and `COMMANDCODE_OUTPUT_TOKENS` overrides it per process.
+- The static model entries in `opencode.json` carried `output: 16384`, which took
+  precedence over the plugin. Those limits are now owned by the plugin alone.
+
 ## [1.0.3] - 2026-10-19
 
 ### Added

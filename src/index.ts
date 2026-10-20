@@ -18,6 +18,24 @@ import { describeRetryEvent } from "./telemetry.ts";
 import { buildReleaseDate, freeCostEntry } from "./catalog.ts";
 
 export const PROVIDER_ID = "commandcode";
+
+/**
+ * Max completion tokens declared for every Command Code model.
+ *
+ * OpenCode forwards `limit.output` as `max_completion_tokens`, so this value caps
+ * every response. The catalog API only exposes the context window, but every model
+ * in models.dev's commandcode provider declares an output limit of at least 32,768
+ * (the minimum is exactly that, for Qwen3.8-27B and Ling 3.1 Flash), so 32,768 is
+ * the highest value that is safe across the whole catalog.
+ *
+ * Override with COMMANDCODE_OUTPUT_TOKENS when a specific model needs more (the
+ * DeepSeek V4.1 Flash 1017 build supports 393,216).
+ */
+function outputLimit(): number {
+  const raw = Number(process.env.COMMANDCODE_OUTPUT_TOKENS);
+  if (Number.isFinite(raw) && raw >= 1024) return Math.floor(raw);
+  return 32768;
+}
 const WATCHDOG_TIMEOUT_MS = 60_000;
 
 function logPath(name: string): string {
@@ -82,7 +100,7 @@ function applyModelCatalog(editor: any, models: any[]): { registered: number; sk
         draft.enabled = true;
         draft.limit = {
           context: model.context_length || 200000,
-          output: 16384,
+          output: outputLimit(),
         };
         draft.capabilities = {
           tools: true,

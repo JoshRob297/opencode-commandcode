@@ -204,6 +204,7 @@ Every setting is an environment variable with a safe default. Full reference:
 | `CC_NO_CONNECTION_CLOSE` | `0` | Set to `1` to stop injecting `Connection: close` |
 | `COMMANDCODE_STATE_DIR` | `$XDG_STATE_HOME/opencode` | Where logs and the model cache live |
 | `COMMANDCODE_LIVE_TESTS` | `0` | Set to `1` to run the network test suite |
+| `COMMANDCODE_OUTPUT_TOKENS` | `32768` | Output token limit declared per model (OpenCode sends it as `max_completion_tokens`). Raise it for models that support more |
 
 Runtime kill switch for connection hygiene: create a sentinel file named
 `.disable-connection-close` inside the plugin directory.
