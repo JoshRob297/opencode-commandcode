@@ -152,7 +152,7 @@ llega el chunk 1            se arma la ventana de inactividad de 60s
 ```
 catalogo vivo (red, timeout 10s)
         |
-        +-- ok --------> filtrar -> registrar -> escribir cache (TTL 12h)
+        +-- ok --------> filtrar -> registrar -> escribir cache (TTL 6h)
         |
         +-- falla -----> leer cache -> registrar
                               |

@@ -70,7 +70,7 @@ Files written under the state directory:
 | `commandcode-sanitizer.log` | append | JSON lines, one per repaired payload |
 | `commandcode-watchdog.log` | append | JSON lines, one per aborted stream |
 | `commandcode-retries.log` | append | JSON lines, Command Code retries only |
-| `commandcode-models-cache.json` | overwrite | `{ at, models[] }`, 12h TTL |
+| `commandcode-models-cache.json` | overwrite | `{ at, models[] }`, 6h TTL |
 
 Logs are append-only and never rotated by the plugin. At the observed event rate
 (tens of lines per week) this is not a concern; if you want rotation, point
@@ -81,7 +81,7 @@ Logs are append-only and never rotated by the plugin. At the observed event rate
 | Constant | Value | Location |
 | --- | --- | --- |
 | API request timeout | 10s | `DEFAULT_TIMEOUT_MS` in `src/client/api.ts` |
-| Catalog cache TTL | 12h | `CATALOG_TTL_MS` in `src/client/api.ts` |
+| Catalog cache TTL | 6h | `CATALOG_TTL_MS` in `src/client/api.ts` |
 | SSE inactivity window | 60s | `WATCHDOG_TIMEOUT_MS` in `src/index.ts` |
 | Default output limit per model | 16384 | `applyModelCatalog` in `src/index.ts` |
 
