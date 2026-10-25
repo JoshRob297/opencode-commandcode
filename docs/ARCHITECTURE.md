@@ -149,7 +149,7 @@ chunk 1 arrives            60s inactivity window armed
 ```
 /latest catalog (network, 10s timeout)
         |
-        +-- ok --------> filter -> register -> write cache (12h TTL)
+        +-- ok --------> filter -> register -> write cache (6h TTL)
         |
         +-- fail ------> read cache -> register
                               |

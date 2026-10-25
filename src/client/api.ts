@@ -21,7 +21,7 @@ export const API_BASE = "https://api.commandcode.ai";
 export const CLI_VERSION = "1.73.4";
 
 const DEFAULT_TIMEOUT_MS = 10_000;
-const CATALOG_TTL_MS = 12 * 60 * 60 * 1000;
+const CATALOG_TTL_MS = 6 * 60 * 60 * 1000;
 
 export interface CommandCodeModel {
   id: string;

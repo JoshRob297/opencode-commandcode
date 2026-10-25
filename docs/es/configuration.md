@@ -70,7 +70,7 @@ Archivos escritos bajo el directorio de estado:
 | `commandcode-sanitizer.log` | append | JSON lines, una por payload reparado |
 | `commandcode-watchdog.log` | append | JSON lines, una por stream abortado |
 | `commandcode-retries.log` | append | JSON lines, solo reintentos de Command Code |
-| `commandcode-models-cache.json` | sobrescritura | `{ at, models[] }`, TTL 12h |
+| `commandcode-models-cache.json` | sobrescritura | `{ at, models[] }`, TTL 6h |
 
 Los logs son append-only y el plugin no los rota. A la tasa observada (decenas de
 lineas por semana) no es un problema; si querés rotacion, apunta
@@ -81,7 +81,7 @@ lineas por semana) no es un problema; si querés rotacion, apunta
 | Constante | Valor | Ubicacion |
 | --- | --- | --- |
 | Timeout de request a la API | 10s | `DEFAULT_TIMEOUT_MS` en `src/client/api.ts` |
-| TTL de la cache del catalogo | 12h | `CATALOG_TTL_MS` en `src/client/api.ts` |
+| TTL de la cache del catalogo | 6h | `CATALOG_TTL_MS` en `src/client/api.ts` |
 | Ventana de inactividad SSE | 60s | `WATCHDOG_TIMEOUT_MS` en `src/index.ts` |
 | Limite de salida por defecto | 16384 | `applyModelCatalog` en `src/index.ts` |
 

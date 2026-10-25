@@ -43,7 +43,7 @@ through the OpenCode v2 model editor:
   `trial` in the display name.
 - **Advertised context window** is preserved per model, and vision-capable models
   declare `image` input.
-- **Offline-safe.** The catalog is cached on disk (12h TTL). If Command Code is
+- **Offline-safe.** The catalog is cached on disk (6h TTL). If Command Code is
   down or the network is unavailable, OpenCode still starts with the last known
   good catalog instead of an empty provider.
 
@@ -218,7 +218,7 @@ Runtime kill switch for connection hygiene: create a sentinel file named
 | `<state>/commandcode-sanitizer.log` | Every in-flight payload repair, with the fixes applied |
 | `<state>/commandcode-watchdog.log` | Aborted stalled SSE streams |
 | `<state>/commandcode-retries.log` | Command Code transport retries: session, agent, provider, model, error type, HTTP status, attempt number, backoff delay and message |
-| `<state>/commandcode-models-cache.json` | Last known good model catalog (12h TTL) |
+| `<state>/commandcode-models-cache.json` | Last known good model catalog (6h TTL) |
 
 `<state>` defaults to `~/.local/state/opencode`.
 

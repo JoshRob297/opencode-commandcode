@@ -46,7 +46,7 @@ mediante el editor de modelos de OpenCode v2:
   `trial` en el nombre visible.
 - **Ventana de contexto real** por modelo, y los modelos multimodales declaran entrada
   `image`.
-- **Funciona sin red.** El catalogo se cachea en disco (TTL 12h). Si Command Code esta
+- **Funciona sin red.** El catalogo se cachea en disco (TTL 6h). Si Command Code esta
   caido o no hay red, OpenCode arranca igual con el ultimo catalogo bueno en lugar de
   quedarse con el proveedor vacio.
 
@@ -224,7 +224,7 @@ Kill switch en runtime para la higiene de conexion: crea un archivo centinela ll
 | `<state>/commandcode-sanitizer.log` | Cada reparacion de payload en vuelo, con las correcciones aplicadas |
 | `<state>/commandcode-watchdog.log` | Streams SSE abortados por inactividad |
 | `<state>/commandcode-retries.log` | Reintentos de transporte de Command Code: sesion, agente, proveedor, modelo, tipo de error, status HTTP, numero de intento, delay del backoff y mensaje |
-| `<state>/commandcode-models-cache.json` | Ultimo catalogo de modelos bueno (TTL 12h) |
+| `<state>/commandcode-models-cache.json` | Ultimo catalogo de modelos bueno (TTL 6h) |
 
 `<state>` por defecto es `~/.local/state/opencode`.
 
