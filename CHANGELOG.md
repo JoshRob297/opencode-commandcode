@@ -5,6 +5,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) - SemVer.
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-10-25
+
+### Added
+- Auto-repair for models requiring historical `reasoning_content` (such as `reflection/beam:free`). Prevents HTTP 400 parameter errors in multi-turn assistant and agent workflows by synthesizing compliant thoughts.
+
+### Changed
+- Updated tracked Command Code CLI version signature (`CLI_VERSION`) from `1.73.4` to `1.88.0`.
+
 ## [1.0.5] - 2026-10-24
 
 ### Changed

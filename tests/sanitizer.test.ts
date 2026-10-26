@@ -210,3 +210,26 @@ describe("capExcessiveSleepCommand (unwired helper, kept for a future tool hook)
     expect(res.command).toBe("sleep 10 && ls");
   });
 });
+
+  test("injects synthetic reasoning_content on assistant messages when targetModel is reflection/beam", () => {
+    const messages = [
+      { role: "user", content: "hello" },
+      { role: "assistant", content: "I am assistant" },
+      { role: "user", content: "ping" },
+    ];
+    const res = sanitizeCommandCodeMessages(messages as any, "reflection/beam:free");
+    expect(res.modified).toBe(true);
+    expect(res.messages[1]?.reasoning_content).toBe("Thought: I am assistant");
+    expect(res.fixes.some((f) => f.includes("Injected missing reasoning_content"))).toBe(true);
+  });
+
+  test("does not inject reasoning_content when model is not reasoning-dependent", () => {
+    const messages = [
+      { role: "user", content: "hello" },
+      { role: "assistant", content: "I am assistant" },
+      { role: "user", content: "ping" },
+    ];
+    const res = sanitizeCommandCodeMessages(messages as any, "deepseek/deepseek-v4.1-flash");
+    expect(res.modified).toBe(false);
+    expect(res.messages[1]?.reasoning_content).toBeUndefined();
+  });

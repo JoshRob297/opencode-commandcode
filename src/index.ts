@@ -195,7 +195,8 @@ export default {
           }
           if (!Array.isArray(json.messages)) return;
 
-          const { messages, modified, fixes } = sanitizeCommandCodeMessages(json.messages);
+          const targetModel = typeof json.model === "string" ? json.model : undefined;
+          const { messages, modified, fixes } = sanitizeCommandCodeMessages(json.messages, targetModel);
           if (!modified) return;
 
           json.messages = messages;

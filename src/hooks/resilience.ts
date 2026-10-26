@@ -105,7 +105,7 @@ export interface SanitizeResult {
  * 4. `null` / empty tool response content -> normalized to "{}".
  * 5. Assistant tool_calls with no answer in their block -> synthetic response.
  */
-export function sanitizeCommandCodeMessages(messages: Message[]): SanitizeResult {
+export function sanitizeCommandCodeMessages(messages: Message[], targetModel?: string): SanitizeResult {
   if (!Array.isArray(messages) || messages.length === 0) {
     return { messages: Array.isArray(messages) ? messages : [], modified: false, fixes: [] };
   }
@@ -222,6 +222,25 @@ export function sanitizeCommandCodeMessages(messages: Message[]): SanitizeResult
       fixes.push(`Injected synthetic response for dangling tool_call ${tc.id}`);
       modified = true;
       syntheticCounter++;
+    }
+  }
+
+  // 6. Inject reasoning_content for models requiring reasoning history (e.g. reflection/beam).
+  const requiresReasoning =
+    typeof targetModel === "string" &&
+    (targetModel.toLowerCase().includes("beam") || targetModel.toLowerCase().includes("reflection"));
+
+  if (requiresReasoning) {
+    for (let i = 0; i < finalMessages.length; i++) {
+      const msg = finalMessages[i]!;
+      if (msg.role === "assistant" && (!msg.reasoning_content || typeof msg.reasoning_content !== "string")) {
+        msg.reasoning_content =
+          typeof msg.content === "string" && msg.content.trim().length > 0
+            ? `Thought: ${msg.content.slice(0, 100)}`
+            : "Thought: Processing step";
+        fixes.push(`Injected missing reasoning_content at assistant message ${i} for ${targetModel}`);
+        modified = true;
+      }
     }
   }
 
