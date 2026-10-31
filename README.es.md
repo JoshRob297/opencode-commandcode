@@ -94,6 +94,18 @@ un request):
 - **Registro de reintentos** - persiste los reintentos de transporte solo de Command
   Code, para poder diagnosticar una caida upstream a posteriori.
 
+### Zero data retention (opt-in)
+
+Command Code expone ZDR como cabecera de peticion (`x-cmd-zdr: 1`), el mismo
+opt-in que su CLI lee de `CMD_ZDR=1`. El plugin lo replica:
+
+- `CMD_ZDR=1` - toda peticion a `api.commandcode.ai` lleva `x-cmd-zdr: 1`.
+- En cualquier otro caso - se elimina cualquier `x-cmd-zdr` enviada por el
+  cliente, para que una sesion sin opt-in no pueda emitir la cabecera por error.
+
+La cabecera solo se aplica en el host estricto de Command Code, nunca en un host
+parecido que solo comparta `/provider/v1/...` en la ruta.
+
 ### Telemetria de cuota
 
 - Herramienta `commandcode_quota` y comando `/commandcode-quota`: plan, estado,

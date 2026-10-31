@@ -89,6 +89,18 @@ request):
 - **Retry logger** - persists transport retries for Command Code only, so an
   upstream outage can be diagnosed after the fact.
 
+### Zero data retention (opt-in)
+
+Command Code exposes ZDR as a request header (`x-cmd-zdr: 1`), the same opt-in
+its CLI reads from `CMD_ZDR=1`. The plugin mirrors it:
+
+- `CMD_ZDR=1` - every request to `api.commandcode.ai` carries `x-cmd-zdr: 1`.
+- Otherwise - any caller-supplied `x-cmd-zdr` header is stripped, so a session
+  that never opted in cannot emit the flag by accident.
+
+The header is applied only on the strict Command Code host, never on a lookalike
+that merely shares `/provider/v1/...` in its path.
+
 ### Quota telemetry
 
 - Tool `commandcode_quota` and command `/commandcode-quota`: plan, status,

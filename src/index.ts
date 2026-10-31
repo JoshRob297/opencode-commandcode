@@ -13,6 +13,7 @@ import {
   supportsChatCompletions,
   supportsVision,
 } from "./hooks/resilience.ts";
+import { applyZdrHeader } from "./hooks/zdr.ts";
 import { getQuotaReport } from "./tools/quota.ts";
 import { describeRetryEvent } from "./telemetry.ts";
 import { buildReleaseDate, freeCostEntry } from "./catalog.ts";
@@ -166,7 +167,18 @@ export default {
           }
         }
 
-        // B. Credential injection, STRICT origin only (no lookalike hosts,
+        // B. Zero data retention policy (opt-in only, spoofed headers stripped).
+        //    Strict origin: the header is a Command Code policy flag and must
+        //    never be sent to a host that only happens to share the path.
+        if (isCommandCodeHost(url)) {
+          try {
+            applyZdrHeader(req.headers);
+          } catch {
+            // immutable headers in this runtime
+          }
+        }
+
+        // C. Credential injection, STRICT origin only (no lookalike hosts,
         //    no path-based matching: this is where the API key travels).
         if (isCommandCodeHost(url) && !req.headers.has("authorization")) {
           const key = resolveApiKey();
@@ -179,7 +191,7 @@ export default {
           }
         }
 
-        // C. Payload sanitizer (no credentials involved).
+        // D. Payload sanitizer (no credentials involved).
         try {
           const method = String(req.method || "GET").toUpperCase();
           if (method === "GET" || method === "HEAD") return;
