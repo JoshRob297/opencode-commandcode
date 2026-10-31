@@ -12,6 +12,9 @@ todos los hooks.
 | --- | --- | --- |
 | `COMMAND_CODE_API_KEY` | sin definir | Maxima prioridad. Se usa tal cual (recortada y sin comillas envolventes). |
 | `COMMANDCODE_KEY_FILE` | sin definir | Ruta absoluta a un archivo que contenga solo la key. Se ignora si el archivo falta o esta vacio, para que la cascada continue. |
+| `COMMANDCODE_API_KEYS` | sin definir | Pool separado por comas o espacios. Dos o mas keys activan la rotacion. |
+| `COMMANDCODE_KEYS_FILE` | sin definir | Archivo pool, una `label=key` o key pelada por linea. `#` inicia comentario. |
+| `CMD_ZDR` | sin definir | `1` envia `x-cmd-zdr: 1` (zero data retention). |
 | `XDG_CONFIG_HOME` | `~/.config` | Base del tercer paso de resolucion: `$XDG_CONFIG_HOME/commandcode/key.txt`. |
 
 ### Orden de resolucion
@@ -38,6 +41,29 @@ tests. `resolveApiKey()` devuelve solo el string.
 
 Usala solo para un gateway propio que realmente termine tu trafico hacia Command Code.
 Cada host que agregues aqui puede leer la API key.
+
+### Rotacion de keys
+
+Un pool de dos o mas keys activa la rotacion. Con una sola key (o ninguna) el plugin
+mantiene el comportamiento de key unica y nunca toca una cabecera `Authorization` que
+el host ya haya puesto.
+
+| Fuente | Formato |
+| --- | --- |
+| `COMMANDCODE_API_KEYS` | `key1,key2` o separadas por espacios |
+| `COMMANDCODE_KEYS_FILE` | una `label=key` o key pelada por linea, comentarios con `#` |
+| `~/.config/commandcode/keys.txt` | mismo formato, usado si no hay variables |
+
+| Status | Cooldown |
+| --- | --- |
+| `402` creditos insuficientes | 24h |
+| `401` / `403` key invalida o sin permiso | 24h |
+| `429` rate limit | `Retry-After` si existe y es <= 6h, si no 5m |
+| `5xx` | ninguno (no es culpa de la key) |
+
+Si todas las keys estan en cooldown se usa la que se recupera primero. El estado vive en
+`<state>/commandcode-keys-state.json` (modo 0600, solo etiquetas) y cada cooldown se
+registra en `<state>/commandcode-rotation.log`.
 
 ```
 COMMANDCODE_ALLOWED_HOSTS=gateway.internal,proxy.lan

@@ -5,6 +5,20 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) - SemVer.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-31
+
+### Added
+- Multi-key rotation (opt-in). With two or more keys from
+  `COMMANDCODE_API_KEYS`, `COMMANDCODE_KEYS_FILE` or
+  `~/.config/commandcode/keys.txt`, the plugin picks the first key that is not
+  cooling down, so a dead account does not end the turn. `402` and `401`/`403`
+  block a key for 24h, `429` honours `Retry-After` up to 6h (5m by default), and
+  `5xx` never blames the key. The soonest recovery wins when every key is
+  cooling down. State is labels-only (`commandcode-keys-state.json`, 0600) and
+  every cooldown is logged to `commandcode-rotation.log` without secrets.
+  Single-key mode keeps the previous behaviour: the plugin never overrides an
+  `Authorization` header the host already set.
+
 ## [1.0.7] - 2026-10-31
 
 ### Added

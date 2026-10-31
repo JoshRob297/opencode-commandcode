@@ -14,6 +14,7 @@ import {
   supportsVision,
 } from "./hooks/resilience.ts";
 import { applyZdrHeader } from "./hooks/zdr.ts";
+import { loadKeyPool, loadPoolState, recordResponse, selectKey } from "./auth/pool.ts";
 import { getQuotaReport } from "./tools/quota.ts";
 import { describeRetryEvent } from "./telemetry.ts";
 import { buildReleaseDate, freeCostEntry } from "./catalog.ts";
@@ -151,12 +152,19 @@ export default {
   id: "opencode-commandcode",
 
   async setup(ctx: any) {
+    // Multi-key pool (opt-in): rotation only activates with two or more keys.
+    const keyPool = loadKeyPool();
+    const rotationEnabled = keyPool.length >= 2;
+    const pendingKeyByRequest = new WeakMap<object, string>();
+    const lastKeyBySession = new Map<string, string>();
+
     // ---------------------------------------------------------------- 1. Hooks
     if (ctx?.session && typeof ctx.session.hook === "function") {
       await ctx.session.hook("http.request", async (event: any) => {
         const req = event?.request;
         const url = req?.url || "";
         if (!req || !isCommandCodeRequest(url)) return;
+        let selectedLabel: string | null = null;
 
         // A. Connection hygiene (Bun keep-alive vs Cloudflare idle close).
         if (!isConnectionCloseDisabled()) {
@@ -180,13 +188,30 @@ export default {
 
         // C. Credential injection, STRICT origin only (no lookalike hosts,
         //    no path-based matching: this is where the API key travels).
-        if (isCommandCodeHost(url) && !req.headers.has("authorization")) {
-          const key = resolveApiKey();
-          if (key) {
-            try {
-              req.headers.set("authorization", `Bearer ${key}`);
-            } catch {
-              // ignore
+        if (isCommandCodeHost(url)) {
+          if (rotationEnabled) {
+            // Rotation owns the credential: a request must never keep the key
+            // that the host config injected, or a cooling-down key would be
+            // reused after a 402/429 was recorded for it.
+            const selected = selectKey(keyPool, loadPoolState());
+            if (selected) {
+              try {
+                req.headers.set("authorization", `Bearer ${selected.key}`);
+                selectedLabel = selected.label;
+                pendingKeyByRequest.set(req, selected.label);
+                if (event.sessionID) lastKeyBySession.set(event.sessionID, selected.label);
+              } catch {
+                // immutable headers in this runtime
+              }
+            }
+          } else if (!req.headers.has("authorization")) {
+            const key = resolveApiKey();
+            if (key) {
+              try {
+                req.headers.set("authorization", `Bearer ${key}`);
+              } catch {
+                // ignore
+              }
             }
           }
         }
@@ -222,6 +247,9 @@ export default {
             body: newBody,
             signal: req.signal,
           });
+          if (selectedLabel) {
+            pendingKeyByRequest.set(event.request, selectedLabel);
+          }
 
           await appendEvent(logPath("commandcode-sanitizer.log"), {
             at: new Date().toISOString(),
@@ -238,6 +266,33 @@ export default {
       await ctx.session.hook("http.response", async (event: any) => {
         const url = event?.request?.url || "";
         if (!isCommandCodeRequest(url)) return;
+
+        // Key rotation: record the cooldown implied by this response so the
+        // next request picks a different account instead of the same dead key.
+        if (rotationEnabled && isCommandCodeHost(url)) {
+          const label =
+            (event?.request ? pendingKeyByRequest.get(event.request) : undefined) ??
+            (event?.sessionID ? lastKeyBySession.get(event.sessionID) : undefined);
+          const status = Number(event?.response?.status ?? 0);
+          if (label) {
+            const cooldown = recordResponse(
+              loadPoolState(),
+              label,
+              status,
+              event?.response?.headers?.get?.("retry-after") ?? null
+            );
+            if (cooldown) {
+              await appendEvent(logPath("commandcode-rotation.log"), {
+                at: new Date().toISOString(),
+                sessionID: event.sessionID,
+                keyLabel: label,
+                status,
+                reason: cooldown.reason,
+                cooldownUntil: new Date(cooldown.until).toISOString(),
+              });
+            }
+          }
+        }
 
         const res = event.response;
         if (!res || !res.body) return;

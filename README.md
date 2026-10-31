@@ -67,6 +67,31 @@ it would leak the key to lookalike hosts such as `api.commandcode.ai.evil.com`
 or to any server that merely carries `/provider/v1/chat/completions` in its URL.
 An existing `authorization` header is never overwritten.
 
+### Multi-key rotation (opt-in)
+
+Several Command Code keys can be pooled so a dead account does not end the turn.
+Two or more keys enable rotation; one key keeps the single-key path untouched.
+
+```sh
+# inline
+export COMMANDCODE_API_KEYS="key_one,key_two"
+
+# or a file, one per line (`label=key` or bare key, `#` comments)
+export COMMANDCODE_KEYS_FILE="$HOME/.config/commandcode/keys.txt"
+```
+
+Cooldowns are recorded per key from the response that blamed the credential:
+`402` (insufficient credits) and `401`/`403` block for 24h, `429` honours
+`Retry-After` up to 6h (5m by default), and `5xx` never blames the key. When all
+keys are cooling down the soonest recovery wins. State is labels-only
+(`<state>/commandcode-keys-state.json`, mode 0600) and every cooldown is logged
+to `<state>/commandcode-rotation.log`.
+
+In rotation mode the plugin owns the `Authorization` header for
+`api.commandcode.ai`, because the key that the host config injected may be the
+one that just returned `402`. Single-key mode keeps the previous rule: inject
+only when the request has no header.
+
 ### Session stability
 
 Four independent hooks, all fail-open (an error in the plugin can never break a
@@ -212,6 +237,9 @@ Every setting is an environment variable with a safe default. Full reference:
 | --- | --- | --- |
 | `COMMAND_CODE_API_KEY` | - | Key resolution, highest priority |
 | `COMMANDCODE_KEY_FILE` | - | Absolute path to a key file |
+| `COMMANDCODE_API_KEYS` | - | Pool of keys; two or more enable rotation |
+| `COMMANDCODE_KEYS_FILE` | - | Pool file (`label=key` or bare key per line) |
+| `CMD_ZDR` | - | Set to `1` for zero data retention (`x-cmd-zdr: 1`) |
 | `COMMANDCODE_ALLOWED_HOSTS` | - | Comma-separated extra hosts allowed to receive the key |
 | `CC_NO_CONNECTION_CLOSE` | `0` | Set to `1` to stop injecting `Connection: close` |
 | `COMMANDCODE_STATE_DIR` | `$XDG_STATE_HOME/opencode` | Where logs and the model cache live |
@@ -230,6 +258,8 @@ Runtime kill switch for connection hygiene: create a sentinel file named
 | `<state>/commandcode-sanitizer.log` | Every in-flight payload repair, with the fixes applied |
 | `<state>/commandcode-watchdog.log` | Aborted stalled SSE streams |
 | `<state>/commandcode-retries.log` | Command Code transport retries: session, agent, provider, model, error type, HTTP status, attempt number, backoff delay and message |
+| `<state>/commandcode-rotation.log` | Key cooldowns: label, HTTP status, reason and reset time |
+| `<state>/commandcode-keys-state.json` | Per-key cooldown state (labels only, 0600) |
 | `<state>/commandcode-models-cache.json` | Last known good model catalog (6h TTL) |
 
 `<state>` defaults to `~/.local/state/opencode`.
