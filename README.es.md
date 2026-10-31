@@ -92,6 +92,7 @@ Los cooldowns se registran por key segun la respuesta que culpa a la credencial:
 estan en cooldown gana la que se recupera antes. El estado guarda solo etiquetas
 (`<state>/commandcode-keys-state.json`, modo 0600) y cada cooldown se registra en
 `<state>/commandcode-rotation.log`.
+| `<state>/commandcode-errors.log` | Fallos decorados: status, codigo upstream, mensaje y la pista mostrada al usuario |
 
 En modo rotacion el plugin es dueno de la cabecera `Authorization` para
 `api.commandcode.ai`, porque la key que inyecto el host puede ser justo la que
@@ -137,6 +138,23 @@ parecido que solo comparta `/provider/v1/...` en la ruta.
 - Herramienta `commandcode_quota` y comando `/commandcode-quota`: plan, estado,
   credito mensual restante, ventanas de rate limit de 5h y semanal con temporizador de
   reset, mas los totales del ciclo (peticiones, tokens, gasto).
+
+### Errores accionables
+
+Los fallos de Command Code conservan su status HTTP y su envelope JSON, pero el
+mensaje gana una pista de resolucion:
+
+| Fallo | Pista agregada |
+| --- | --- |
+| `402` creditos insuficientes | agrega creditos u otra cuenta a `COMMANDCODE_API_KEYS` |
+| `MODEL_NOT_IN_PLAN` | elige otro modelo o sube de plan |
+| `401` / `403` | reemplaza la key o rota el pool |
+| `429` / ventana del plan | espera el reset o rota a otra key |
+| `unsupported_model` | el modelo es Anthropic-shaped y solo se sirve en `/messages` |
+
+Solo se tocan cuerpos JSON de error, el status nunca se reescribe (la clasificacion
+de reintentos de OpenCode depende de el) y cada decoracion se registra en
+`<state>/commandcode-errors.log`.
 
 ---
 
