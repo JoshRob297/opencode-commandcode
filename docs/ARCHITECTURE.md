@@ -8,8 +8,11 @@
 index.ts                     entrypoint: `export default { id, setup, server }`
 src/index.ts                 registration of hooks, model catalog, tool and command
 src/auth/resolver.ts         credential cascade (pure I/O, no network)
+src/auth/pool.ts             multi-key pool, cooldowns and state persistence
 src/client/api.ts            Command Code API client + on-disk catalog cache
 src/hooks/resilience.ts      pure helpers (no side effects except a sentinel check)
+src/hooks/zdr.ts             zero data retention policy (CMD_ZDR)
+src/hooks/errors.ts          actionable JSON error decoration
 src/tools/quota.ts           quota payload formatting
 ```
 
@@ -26,9 +29,11 @@ OpenCode start
 plugin.setup(ctx)
       |
       +-- ctx.session.hook("http.request")   -> connection hygiene
-      |                                      -> credential injection (exact host only)
+      |                                      -> ZDR policy (opt-in)
+      |                                      -> credential injection / key rotation
       |                                      -> payload sanitizer
-      +-- ctx.session.hook("http.response")  -> SSE inactivity watchdog
+      +-- ctx.session.hook("http.response")  -> key cooldown + actionable errors
+      |                                      -> SSE inactivity watchdog
       +-- ctx.session.hook("retry")          -> retry telemetry (Command Code only)
       +-- ctx.model.transform()              -> catalog registration + promo badges
       +-- ctx.tool.transform()               -> commandcode_quota
@@ -55,11 +60,15 @@ OpenCode -> model request
       |     set `connection: close` in place on the existing Request
       |     (preserves AbortSignal, body and headers; never rebuilds)
       |
-      |-- B. credential injection
-      |     only if hostname === api.commandcode.ai (or allow-listed)
-      |     and no `authorization` header is present yet
+      |-- B. zero data retention
+      |     CMD_ZDR=1 -> `x-cmd-zdr: 1`; otherwise strip a caller-supplied header
       |
-      |-- C. payload sanitizer
+      |-- C. credential injection / rotation
+      |     exact host only. With one key: inject only when no header is present.
+      |     With a pool of >=2 keys: the plugin owns the header and picks the
+      |     first key that is not cooling down.
+      |
+      |-- D. payload sanitizer
       |     read a clone of the body, repair it, and rebuild the Request
       |     ONLY when something actually changed
       |
@@ -69,6 +78,8 @@ Command Code
       v
 [http.response hook]
       |
+      |-- JSON error? -> append a resolution hint (status and envelope kept)
+      |-- key rotation? -> record a cooldown from 402/401/403/429
       |-- SSE and Command Code? -> wrap in the inactivity watchdog
       |-- otherwise            -> return untouched
       |

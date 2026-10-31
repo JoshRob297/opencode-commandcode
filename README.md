@@ -6,7 +6,7 @@
 
 Production-grade [OpenCode](https://opencode.ai) plugin for the [Command Code](https://commandcode.ai) provider.
 
-It does four things:
+It does six things:
 
 1. **Dynamic model discovery** - registers every Command Code model the
    OpenAI-compatible transport can actually serve, and tags free/promo tiers.
@@ -16,10 +16,14 @@ It does four things:
    HTTP 400, and aborts silently dropped SSE streams before they freeze the UI.
 4. **Quota telemetry** - a `commandcode_quota` tool and a `/commandcode-quota`
    command for balance and rate-limit windows.
+5. **Resilient credentials** - rotates a pool of keys with per-key cooldowns, so
+   one dead account does not end the turn.
+6. **Actionable failures** - a zero data retention opt-in (`CMD_ZDR=1`) and error
+   messages that say what to do next instead of repeating the provider text.
 
 > [!NOTE]
 > **Status: private development.** The plugin is verified against
-> OpenCode **v2.0.32** and Command Code position **1.73.4** on Bun 1.4.0.
+> OpenCode **v2.2.0** and the Command Code CLI **1.88.0** on Bun 1.4.0.
 > It is not yet published to a registry; install it from this repository.
 
 ---
@@ -65,7 +69,8 @@ hostname is exactly `api.commandcode.ai`** (or a host explicitly allow-listed vi
 `COMMANDCODE_ALLOWED_HOSTS`). Substring matching is never used for credentials:
 it would leak the key to lookalike hosts such as `api.commandcode.ai.evil.com`
 or to any server that merely carries `/provider/v1/chat/completions` in its URL.
-An existing `authorization` header is never overwritten.
+In single-key mode an existing `authorization` header is never overwritten; in
+rotation mode the plugin owns it (see below).
 
 ### Multi-key rotation (opt-in)
 

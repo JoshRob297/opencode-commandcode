@@ -56,7 +56,9 @@ Reglas de diseno que existen por este modelo de amenazas:
 | --- | --- |
 | Las credenciales se adjuntan solo tras una coincidencia exacta de hostname | la coincidencia por substring es trivialmente explotable (`api.commandcode.ai.evil.com`, coincidencias por path, query strings) |
 | `COMMANDCODE_ALLOWED_HOSTS` es la unica allow-list | un opt-in explicito y auditable en lugar de una coincidencia difusa |
-| Una cabecera `authorization` existente nunca se sobrescribe | una credencial provista por el llamador no debe reemplazarse en silencio |
+| En modo key unica nunca se sobrescribe una cabecera `authorization` existente | una credencial del cliente no debe reemplazarse en silencio |
+| En modo rotacion el plugin es dueno de `authorization` en el host estricto de Command Code | la key que inyecto el host puede ser la que acaba de devolver 402; el pool es un opt-in explicito |
+| `x-cmd-zdr` se elimina salvo que `CMD_ZDR=1` | una politica de retencion de datos no debe activarse por accidente |
 | Los logs nunca registran la key, la cabecera `authorization` ni los cuerpos de request | los archivos `commandcode-*.log` son texto plano en disco |
 | El sanitizador nunca reescribe campos distintos de `messages` | limita el radio de impacto de una modificacion de payload en vuelo |
 | Todos los hooks son fail-open | un atacante no debe poder desactivar los requests de modelo induciendo un error del plugin |
