@@ -71,6 +71,7 @@ When every key is cooling down the one that recovers first is used, so the
 request still reaches upstream. State lives in
 `<state>/commandcode-keys-state.json` (mode 0600, labels only, never keys) and
 each cooldown is appended to `<state>/commandcode-rotation.log`.
+| `commandcode-errors.log` | append | JSON lines, one per decorated failure |
 
 ## Transport
 

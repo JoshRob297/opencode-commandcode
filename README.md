@@ -86,6 +86,7 @@ Cooldowns are recorded per key from the response that blamed the credential:
 keys are cooling down the soonest recovery wins. State is labels-only
 (`<state>/commandcode-keys-state.json`, mode 0600) and every cooldown is logged
 to `<state>/commandcode-rotation.log`.
+| `<state>/commandcode-errors.log` | Decorated failures: status, upstream code, message and the hint shown to the user |
 
 In rotation mode the plugin owns the `Authorization` header for
 `api.commandcode.ai`, because the key that the host config injected may be the
@@ -131,6 +132,23 @@ that merely shares `/provider/v1/...` in its path.
 - Tool `commandcode_quota` and command `/commandcode-quota`: plan, status,
   remaining monthly credit, 5h and weekly rate-limit windows with reset timers,
   plus cycle totals (requests, tokens, spend).
+
+### Actionable errors
+
+Command Code failures keep their HTTP status and JSON envelope, but the message
+gains a resolution hint:
+
+| Failure | Hint appended |
+| --- | --- |
+| `402` insufficient credits | add credits or another account to `COMMANDCODE_API_KEYS` |
+| `MODEL_NOT_IN_PLAN` | pick another model or upgrade the plan |
+| `401` / `403` | replace the key or rotate the pool |
+| `429` / plan window | wait for the reset or rotate to another key |
+| `unsupported_model` | the model is Anthropic-shaped and only served on `/messages` |
+
+Only JSON error bodies are touched, the status is never rewritten (OpenCode's
+retry classification depends on it) and every decoration is logged to
+`<state>/commandcode-errors.log`.
 
 ---
 

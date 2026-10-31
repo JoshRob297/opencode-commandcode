@@ -5,6 +5,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) - SemVer.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-31
+
+### Added
+- Actionable Command Code errors. JSON failure envelopes keep their HTTP status
+  and shape, but the message gains a resolution hint: add credits or another key
+  for 402, pick another model or upgrade for MODEL_NOT_IN_PLAN, replace or rotate
+  for 401/403, wait or rotate for 429, and the Anthropic-surface note for
+  unsupported_model. The status is never rewritten (OpenCode's retry
+  classification depends on it), only JSON bodies are touched, and every
+  decoration is logged to commandcode-errors.log.
+
 ## [1.1.0] - 2026-10-31
 
 ### Added

@@ -15,6 +15,7 @@ import {
 } from "./hooks/resilience.ts";
 import { applyZdrHeader } from "./hooks/zdr.ts";
 import { loadKeyPool, loadPoolState, recordResponse, selectKey } from "./auth/pool.ts";
+import { decorateErrorBody } from "./hooks/errors.ts";
 import { getQuotaReport } from "./tools/quota.ts";
 import { describeRetryEvent } from "./telemetry.ts";
 import { buildReleaseDate, freeCostEntry } from "./catalog.ts";
@@ -290,6 +291,38 @@ export default {
                 reason: cooldown.reason,
                 cooldownUntil: new Date(cooldown.until).toISOString(),
               });
+            }
+          }
+        }
+
+        // Actionable failures: keep the status and envelope, append a
+        // resolution hint. JSON only; SSE and success bodies stay untouched.
+        const failed = event.response;
+        if (failed && failed.status >= 400) {
+          const failureType = failed.headers?.get?.("content-type") || "";
+          if (failureType.includes("application/json")) {
+            try {
+              const raw = await failed.clone().text();
+              const decorated = decorateErrorBody(raw, failed.status);
+              if (decorated) {
+                const headers = new Headers(failed.headers);
+                headers.delete("content-length");
+                event.response = new Response(decorated.body, {
+                  status: failed.status,
+                  statusText: failed.statusText,
+                  headers,
+                });
+                await appendEvent(logPath("commandcode-errors.log"), {
+                  at: new Date().toISOString(),
+                  sessionID: event.sessionID,
+                  status: decorated.status,
+                  code: decorated.code,
+                  message: decorated.message,
+                  hint: decorated.hint,
+                });
+              }
+            } catch {
+              // fail-open: an undecorated error is still a usable error
             }
           }
         }

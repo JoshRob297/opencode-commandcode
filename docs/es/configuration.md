@@ -64,6 +64,7 @@ el host ya haya puesto.
 Si todas las keys estan en cooldown se usa la que se recupera primero. El estado vive en
 `<state>/commandcode-keys-state.json` (modo 0600, solo etiquetas) y cada cooldown se
 registra en `<state>/commandcode-rotation.log`.
+| `commandcode-errors.log` | append | JSON lines, uno por fallo decorado |
 
 ```
 COMMANDCODE_ALLOWED_HOSTS=gateway.internal,proxy.lan
