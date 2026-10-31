@@ -12,6 +12,9 @@ hook.
 | --- | --- | --- |
 | `COMMAND_CODE_API_KEY` | unset | Highest priority. Used as-is (trimmed, surrounding quotes stripped). |
 | `COMMANDCODE_KEY_FILE` | unset | Absolute path to a file containing only the key. Ignored when the file is missing or empty, so the cascade keeps going. |
+| `COMMANDCODE_API_KEYS` | unset | Comma or whitespace separated pool. Two or more keys enable rotation. |
+| `COMMANDCODE_KEYS_FILE` | unset | Pool file, one `label=key` or bare key per line. `#` starts a comment. |
+| `CMD_ZDR` | unset | Set to `1` to send `x-cmd-zdr: 1` (zero data retention). |
 | `XDG_CONFIG_HOME` | `~/.config` | Base for the third resolution step: `$XDG_CONFIG_HOME/commandcode/key.txt`. |
 
 ### Resolution order
@@ -43,6 +46,32 @@ Code traffic. Every host added here can read the API key.
 COMMANDCODE_ALLOWED_HOSTS=gateway.internal,proxy.lan
 ```
 
+### Key rotation
+
+A pool of two or more keys activates rotation. With one key (or none) the plugin
+keeps the single-key behaviour and never touches an `Authorization` header the
+host already set.
+
+| Source | Format |
+| --- | --- |
+| `COMMANDCODE_API_KEYS` | `key1,key2` or whitespace separated |
+| `COMMANDCODE_KEYS_FILE` | one `label=key` or bare key per line, `#` comments |
+| `~/.config/commandcode/keys.txt` | same format, used when neither variable is set |
+
+Cooldown recorded per key after a response that blames the credential:
+
+| Status | Cooldown |
+| --- | --- |
+| `402` insufficient credits | 24h |
+| `401` / `403` invalid or not entitled | 24h |
+| `429` rate limited | `Retry-After` when present and at most 6h, else 5m |
+| `5xx` | none (not the key's fault) |
+
+When every key is cooling down the one that recovers first is used, so the
+request still reaches upstream. State lives in
+`<state>/commandcode-keys-state.json` (mode 0600, labels only, never keys) and
+each cooldown is appended to `<state>/commandcode-rotation.log`.
+
 ## Transport
 
 | Variable | Default | Meaning |
@@ -70,6 +99,8 @@ Files written under the state directory:
 | `commandcode-sanitizer.log` | append | JSON lines, one per repaired payload |
 | `commandcode-watchdog.log` | append | JSON lines, one per aborted stream |
 | `commandcode-retries.log` | append | JSON lines, Command Code retries only |
+| `commandcode-rotation.log` | append | JSON lines, one per key cooldown (label, status, reason, reset time) |
+| `commandcode-keys-state.json` | overwrite | Cooldown state per key label (0600, no secrets) |
 | `commandcode-models-cache.json` | overwrite | `{ at, models[] }`, 6h TTL |
 
 Logs are append-only and never rotated by the plugin. At the observed event rate
