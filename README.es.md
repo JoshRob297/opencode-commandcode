@@ -7,7 +7,7 @@
 Plugin de nivel produccion para [OpenCode](https://opencode.ai) con el proveedor
 [Command Code](https://commandcode.ai).
 
-Hace cuatro cosas:
+Hace seis cosas:
 
 1. **Descubrimiento dinamico de modelos** - registra cada modelo de Command Code que
    el transporte compatible con OpenAI realmente puede servir, y etiqueta los tiers
@@ -19,11 +19,15 @@ Hace cuatro cosas:
    la interfaz.
 4. **Telemetria de cuota** - herramienta `commandcode_quota` y comando
    `/commandcode-quota` para balance y ventanas de rate limit.
+5. **Credenciales resilientes** - rota un pool de keys con cooldowns por key, para
+   que una cuenta muerta no corte el turno.
+6. **Fallos accionables** - opt-in de zero data retention (`CMD_ZDR=1`) y mensajes
+   de error que dicen que hacer en lugar de repetir el texto del proveedor.
 
 > [!NOTE]
 > **Estado: desarrollo privado.** El plugin esta verificado contra OpenCode
-> **v2.0.32** y Command Code **1.73.4** sobre Bun 1.4.0. Todavia no esta publicado
-> en ningun registro; se instala desde este repositorio.
+> **v2.2.0** y el CLI de Command Code **1.88.0** sobre Bun 1.4.0. Todavia no esta
+> publicado en ningun registro; se instala desde este repositorio.
 
 ---
 
@@ -69,8 +73,8 @@ parseado de la URL es exactamente `api.commandcode.ai`** (o un host autorizado d
 forma explicita con `COMMANDCODE_ALLOWED_HOSTS`). Nunca se usa coincidencia por
 substring para credenciales: filtraria la key a hosts parecidos como
 `api.commandcode.ai.evil.com` o a cualquier servidor que solo lleve
-`/provider/v1/chat/completions` en su URL. Una cabecera `authorization` existente
-jamas se sobrescribe.
+`/provider/v1/chat/completions` en su URL. En modo key unica una cabecera `authorization` existente
+jamas se sobrescribe; en modo rotacion el plugin es dueno de ella (ver abajo).
 
 ### Rotacion multi-key (opt-in)
 

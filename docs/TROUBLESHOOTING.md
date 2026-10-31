@@ -155,6 +155,55 @@ cat "${COMMANDCODE_STATE_DIR:-$HOME/.local/state/opencode}/commandcode-watchdog.
   timeout. Verify the request actually reached the network, then raise that timeout
   or retry.
 
+## `HTTP 402 insufficient credits`
+
+The account behind the key has no balance, so Command Code rejects every request
+before routing it, including paid models. The plugin appends a hint to the
+message and, when a key pool is configured, records a 24h cooldown for that key.
+
+Actions: top up the account at commandcode.ai, or add a second key to the pool
+(`COMMANDCODE_API_KEYS`, `COMMANDCODE_KEYS_FILE` or
+`~/.config/commandcode/keys.txt`). See
+[CONFIGURATION](CONFIGURATION.md#key-rotation).
+
+## `MODEL_NOT_IN_PLAN`
+
+The model exists but the plan does not include it (for example Claude models on
+an `INDIVIDUAL-GOAT` plan, or GPT-5.5 on Goat). The plugin appends the hint
+"pick another model or upgrade the plan" and leaves the status untouched.
+
+Check the current list at commandcode.ai/models before upgrading.
+
+## One key is dead and the others still work
+
+Configure a pool of two or more keys; rotation is opt-in and additive:
+
+| Status | Cooldown recorded |
+| --- | --- |
+| `402` | 24h |
+| `401` / `403` | 24h |
+| `429` | `Retry-After` up to 6h, else 5m |
+| `5xx` | none |
+
+Inspect `<state>/commandcode-keys-state.json` for the cooldown state and
+`<state>/commandcode-rotation.log` for the timeline. Delete the state file to
+clear every cooldown immediately.
+
+With a single key the plugin keeps the old behaviour and never overrides an
+`Authorization` header the host already set.
+
+## Zero data retention does not appear to be on
+
+ZDR is an explicit opt-in, the same one the Command Code CLI reads:
+
+```sh
+export CMD_ZDR=1
+```
+
+Any other value (including `true`) leaves it off, and a caller-supplied
+`x-cmd-zdr` header is stripped so a session cannot enable it by accident. The
+header is only sent to the strict Command Code host.
+
 ## Key not found
 
 The quota tool reports `Error consultando Command Code: No se encontro ...`. Check

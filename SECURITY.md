@@ -54,7 +54,9 @@ Design rules that exist because of this threat model:
 | --- | --- |
 | Credentials are attached only after an exact hostname match | substring matching is trivially exploitable (`api.commandcode.ai.evil.com`, path-based matches, query strings) |
 | `COMMANDCODE_ALLOWED_HOSTS` is the only allow-list | an explicit, auditable opt-in instead of a fuzzy match |
-| An existing `authorization` header in never overwritten | a caller-provided credential must not be silently replaced |
+| In single-key mode an existing `authorization` header is never overwritten | a caller-provided credential must not be silently replaced |
+| In rotation mode the plugin owns `authorization` on the strict Command Code host | the key the host injected may be the one that just returned 402; the pool is an explicit opt-in |
+| `x-cmd-zdr` is stripped unless `CMD_ZDR=1` | a data-retention policy must not be enabled by accident |
 | Logs never record the key, the `authorization` header or request bodies | `commandcode-*.log` files are plain text on disk |
 | The sanitizer never rewrites fields other than `messages` | limits the blast radius of an in-flight payload modification |
 | Every hook is fail-open | an attacker must not be able to disable model requests by inducing a plugin error |

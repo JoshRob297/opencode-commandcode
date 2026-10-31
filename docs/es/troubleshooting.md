@@ -156,6 +156,57 @@ cat "${COMMANDCODE_STATE_DIR:-$HOME/.local/state/opencode}/commandcode-watchdog.
   el watchdog no vigila a proposito. Esa ventana pertenece al timeout del proveedor en
   OpenCode. Verifica que el request llego a la red, luego sube ese timeout o reintenta.
 
+## `HTTP 402 insufficient credits`
+
+La cuenta de la key no tiene saldo, asi que Command Code rechaza todo request
+antes de enrutarlo, incluidos los modelos de pago. El plugin agrega una pista al
+mensaje y, si hay un pool de keys configurado, registra un cooldown de 24h para
+esa key.
+
+Acciones: recarga la cuenta en commandcode.ai, o agrega una segunda key al pool
+(`COMMANDCODE_API_KEYS`, `COMMANDCODE_KEYS_FILE` o
+`~/.config/commandcode/keys.txt`). Ver
+[CONFIGURACION](es/configuration.md#rotacion-de-keys).
+
+## `MODEL_NOT_IN_PLAN`
+
+El modelo existe pero el plan no lo incluye (por ejemplo los modelos Claude en un
+plan `INDIVIDUAL-GOAT`, o GPT-5.5 en Goat). El plugin agrega la pista "pick
+another model or upgrade the plan" y deja el status intacto.
+
+Revisa la lista vigente en commandcode.ai/models antes de subir de plan.
+
+## Una key esta muerta y las demas siguen funcionando
+
+Configura un pool de dos o mas keys; la rotacion es opt-in y aditiva:
+
+| Status | Cooldown registrado |
+| --- | --- |
+| `402` | 24h |
+| `401` / `403` | 24h |
+| `429` | `Retry-After` hasta 6h, si no 5m |
+| `5xx` | ninguno |
+
+Revisa `<state>/commandcode-keys-state.json` para el estado y
+`<state>/commandcode-rotation.log` para la linea de tiempo. Borra el archivo de
+estado para limpiar todos los cooldowns de inmediato.
+
+Con una sola key el plugin mantiene el comportamiento anterior y nunca
+sobrescribe una cabecera `Authorization` que el host ya haya puesto.
+
+## No parece estar activo zero data retention
+
+ZDR es un opt-in explicito, el mismo que lee el CLI de Command Code:
+
+```sh
+export CMD_ZDR=1
+```
+
+Cualquier otro valor (incluido `true`) lo deja apagado, y una cabecera
+`x-cmd-zdr` enviada por el cliente se elimina para que una sesion no pueda
+activarlo por accidente. La cabecera solo se envia al host estricto de Command
+Code.
+
 ## No se encuentra la key
 
 La herramienta de cuota responde

@@ -8,8 +8,11 @@
 index.ts                     entrypoint: `export default { id, setup, server }`
 src/index.ts                 registro de hooks, catalogo de modelos, herramienta y comando
 src/auth/resolver.ts         cascada de credenciales (I/O puro, sin red)
+src/auth/pool.ts             pool multi-key, cooldowns y persistencia de estado
 src/client/api.ts            cliente de la API de Command Code + cache del catalogo en disco
 src/hooks/resilience.ts      helpers puros (sin efectos secundarios salvo la revision del centinela)
+src/hooks/zdr.ts             politica de zero data retention (CMD_ZDR)
+src/hooks/errors.ts          decoracion accionable de errores JSON
 src/tools/quota.ts           formateo del payload de cuota
 ```
 
@@ -26,9 +29,11 @@ Arranque de OpenCode
 plugin.setup(ctx)
       |
       +-- ctx.session.hook("http.request")   -> higiene de conexion
-      |                                      -> inyeccion de credencial (solo host exacto)
+      |                                      -> politica ZDR (opt-in)
+      |                                      -> inyeccion de credencial / rotacion de keys
       |                                      -> sanitizador de payload
-      +-- ctx.session.hook("http.response")  -> watchdog de inactividad SSE
+      +-- ctx.session.hook("http.response")  -> cooldown de keys + errores accionables
+      |                                      -> watchdog de inactividad SSE
       +-- ctx.session.hook("retry")          -> telemetria de reintentos (solo Command Code)
       +-- ctx.model.transform()              -> registro del catalogo + etiquetas de promo
       +-- ctx.tool.transform()               -> commandcode_quota
@@ -55,11 +60,15 @@ OpenCode -> request de modelo
       |     setea `connection: close` in-place sobre el Request existente
       |     (preserva AbortSignal, cuerpo y cabeceras; nunca lo reconstruye)
       |
-      |-- B. inyeccion de credencial
-      |     solo si hostname === api.commandcode.ai (o esta en la allow-list)
-      |     y todavia no hay cabecera `authorization`
+      |-- B. zero data retention
+      |     CMD_ZDR=1 -> `x-cmd-zdr: 1`; si no, elimina una cabecera del cliente
       |
-      |-- C. sanitizador de payload
+      |-- C. inyeccion de credencial / rotacion
+      |     solo host exacto. Con una key: inyecta solo si no hay cabecera.
+      |     Con un pool de >=2 keys: el plugin es dueno de la cabecera y elige
+      |     la primera key que no este en cooldown.
+      |
+      |-- D. sanitizador de payload
       |     lee un clon del cuerpo, lo repara y reconstruye el Request
       |     SOLO cuando algo cambio realmente
       |
