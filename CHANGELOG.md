@@ -5,6 +5,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) - SemVer.
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-10-31
+
+### Added
+- Zero data retention passthrough. With `CMD_ZDR=1` every request to
+  `api.commandcode.ai` carries `x-cmd-zdr: 1`, mirroring the Command Code CLI.
+  When the opt-in is absent, any caller-supplied `x-cmd-zdr` header is stripped
+  so a session that never asked for ZDR cannot emit the flag by accident. The
+  header is applied on the strict Command Code host only, never on a lookalike
+  that merely shares the request path.
+
 ## [1.0.6] - 2026-10-25
 
 ### Added
